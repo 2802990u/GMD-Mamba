@@ -1,0 +1,253 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="940" viewBox="0 0 1280 940" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="a" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L7,3 L0,6 z" fill="#37474f"/></marker>
+    <marker id="ag" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L7,3 L0,6 z" fill="#5e35b1"/></marker>
+  </defs>
+  <rect x="0" y="0" width="1280" height="940" fill="#ffffff"/>
+
+  <!-- ===================== PANEL (a) ARCHITECTURE ===================== -->
+  <text x="20" y="30" font-size="20" font-weight="bold" fill="#212121">(a) Overall architecture</text>
+
+  <!-- vertical skip projections (behind) -->
+  <g stroke="#9e9e9e" stroke-width="2" stroke-dasharray="5 4" fill="none">
+    <line x1="250" y1="128" x2="250" y2="214" marker-end="url(#a)"/>
+    <line x1="460" y1="128" x2="460" y2="214" marker-end="url(#a)"/>
+    <line x1="670" y1="128" x2="670" y2="214" marker-end="url(#a)"/>
+  </g>
+  <text x="258" y="178" font-size="10.5" fill="#757575">skip proj.</text>
+  <text x="468" y="178" font-size="10.5" fill="#757575">skip proj.</text>
+  <text x="678" y="178" font-size="10.5" fill="#757575">skip proj.</text>
+
+  <!-- input cube -->
+  <g>
+    <rect x="40" y="76" width="46" height="46" fill="#eceff1" stroke="#607d8b"/>
+    <path d="M40,76 l10,-10 46,0 0,46 -10,10" fill="#cfd8dc" stroke="#607d8b"/>
+    <text x="63" y="140" font-size="11" fill="#455a64" text-anchor="middle">Input</text>
+    <text x="63" y="153" font-size="11" fill="#455a64" text-anchor="middle">volume</text>
+  </g>
+  <!-- stem -->
+  <rect x="104" y="80" width="40" height="40" rx="4" fill="#80cbc4" stroke="#00897b"/>
+  <text x="124" y="104" font-size="11" fill="#004d40" text-anchor="middle" transform="rotate(-90 124 104)">Stem</text>
+
+  <!-- encoder row y=72..128 -->
+  <!-- E0 -->
+  <rect x="190" y="72" width="120" height="56" rx="6" fill="#a5d6a7" stroke="#2e7d32" stroke-width="1.6"/>
+  <text x="250" y="96" font-size="12.5" fill="#1b5e20" text-anchor="middle">Res-Conv</text>
+  <text x="250" y="112" font-size="11" fill="#1b5e20" text-anchor="middle">stage 0</text>
+  <text x="250" y="62" font-size="10.5" fill="#455a64" text-anchor="middle">48×H1×W1×D1</text>
+  <!-- E1 -->
+  <rect x="400" y="72" width="120" height="56" rx="6" fill="#a5d6a7" stroke="#2e7d32" stroke-width="1.6"/>
+  <text x="460" y="96" font-size="12.5" fill="#1b5e20" text-anchor="middle">Res-Conv</text>
+  <text x="460" y="112" font-size="11" fill="#1b5e20" text-anchor="middle">stage 1</text>
+  <text x="460" y="62" font-size="10.5" fill="#455a64" text-anchor="middle">96×H2×W2×D2</text>
+  <!-- E2 GMD -->
+  <rect x="610" y="72" width="120" height="56" rx="6" fill="#b39ddb" stroke="#5e35b1" stroke-width="2"/>
+  <text x="670" y="96" font-size="12.5" fill="#311b92" text-anchor="middle" font-weight="bold">GMD Block</text>
+  <text x="670" y="112" font-size="11" fill="#311b92" text-anchor="middle">stage 2</text>
+  <text x="670" y="62" font-size="10.5" fill="#455a64" text-anchor="middle">192×H3×W3×D3</text>
+  <!-- E3 GMD -->
+  <rect x="820" y="72" width="120" height="56" rx="6" fill="#b39ddb" stroke="#5e35b1" stroke-width="2"/>
+  <text x="880" y="96" font-size="12.5" fill="#311b92" text-anchor="middle" font-weight="bold">GMD Block</text>
+  <text x="880" y="112" font-size="11" fill="#311b92" text-anchor="middle">stage 3</text>
+  <text x="880" y="62" font-size="10.5" fill="#455a64" text-anchor="middle">384×H4×W4×D4</text>
+
+  <!-- encoder arrows (patch merging / downsample) -->
+  <g stroke="#37474f" stroke-width="2" fill="none">
+    <line x1="86" y1="99" x2="102" y2="99" marker-end="url(#a)"/>
+    <line x1="144" y1="99" x2="188" y2="99" marker-end="url(#a)"/>
+    <line x1="310" y1="99" x2="398" y2="99" marker-end="url(#a)"/>
+    <line x1="520" y1="99" x2="608" y2="99" marker-end="url(#a)"/>
+    <line x1="730" y1="99" x2="818" y2="99" marker-end="url(#a)"/>
+  </g>
+  <text x="354" y="90" font-size="9.5" fill="#607d8b" text-anchor="middle">merge ↓2</text>
+  <text x="564" y="90" font-size="9.5" fill="#607d8b" text-anchor="middle">merge ↓2</text>
+  <text x="774" y="90" font-size="9.5" fill="#607d8b" text-anchor="middle">merge ↓2</text>
+
+  <!-- bottleneck (far right) -->
+  <rect x="1000" y="128" width="120" height="48" rx="6" fill="#b0bec5" stroke="#546e7a" stroke-width="1.6"/>
+  <text x="1060" y="157" font-size="12" fill="#263238" text-anchor="middle">Bottleneck</text>
+  <text x="1060" y="120" font-size="10.5" fill="#455a64" text-anchor="middle">768</text>
+  <path d="M940,112 L1000,140" stroke="#37474f" stroke-width="2" fill="none" marker-end="url(#a)"/>
+  <path d="M1000,165 L740,235" stroke="#37474f" stroke-width="2" fill="none" marker-end="url(#a)"/>
+
+  <!-- decoder row y=214..270 -->
+  <rect x="610" y="214" width="120" height="56" rx="6" fill="#90caf9" stroke="#1565c0" stroke-width="1.6"/>
+  <text x="670" y="240" font-size="12.5" fill="#0d47a1" text-anchor="middle">Decoder 3</text>
+  <text x="670" y="256" font-size="11" fill="#0d47a1" text-anchor="middle">384</text>
+  <rect x="400" y="214" width="120" height="56" rx="6" fill="#90caf9" stroke="#1565c0" stroke-width="1.6"/>
+  <text x="460" y="240" font-size="12.5" fill="#0d47a1" text-anchor="middle">Decoder 2</text>
+  <text x="460" y="256" font-size="11" fill="#0d47a1" text-anchor="middle">192</text>
+  <rect x="190" y="214" width="120" height="56" rx="6" fill="#90caf9" stroke="#1565c0" stroke-width="1.6"/>
+  <text x="250" y="240" font-size="12.5" fill="#0d47a1" text-anchor="middle">Decoder 1</text>
+  <text x="250" y="256" font-size="11" fill="#0d47a1" text-anchor="middle">96</text>
+
+  <!-- decoder up arrows (right->left) -->
+  <g stroke="#37474f" stroke-width="2" fill="none">
+    <line x1="610" y1="242" x2="522" y2="242" marker-end="url(#a)"/>
+    <line x1="400" y1="242" x2="312" y2="242" marker-end="url(#a)"/>
+  </g>
+  <text x="566" y="234" font-size="9.5" fill="#607d8b" text-anchor="middle">up ↑2</text>
+  <text x="356" y="234" font-size="9.5" fill="#607d8b" text-anchor="middle">up ↑2</text>
+
+  <!-- head + seg output -->
+  <rect x="104" y="218" width="40" height="48" rx="4" fill="#80cbc4" stroke="#00897b"/>
+  <text x="124" y="246" font-size="10.5" fill="#004d40" text-anchor="middle" transform="rotate(-90 124 246)">Head</text>
+  <line x1="190" y1="242" x2="146" y2="242" stroke="#37474f" stroke-width="2" fill="none" marker-end="url(#a)"/>
+  <g>
+    <rect x="40" y="219" width="46" height="46" fill="#ffe0b2" stroke="#ef6c00"/>
+    <path d="M40,219 l10,-10 46,0 0,46 -10,10" fill="#ffcc80" stroke="#ef6c00"/>
+    <text x="63" y="283" font-size="11" fill="#455a64" text-anchor="middle">Seg</text>
+  </g>
+  <line x1="104" y1="242" x2="88" y2="242" stroke="#37474f" stroke-width="2" fill="none" marker-end="url(#a)"/>
+
+  <!-- legend -->
+  <rect x="980" y="214" width="16" height="13" fill="#a5d6a7" stroke="#2e7d32"/><text x="1002" y="225" font-size="11" fill="#455a64">Res-Conv (shallow)</text>
+  <rect x="980" y="233" width="16" height="13" fill="#b39ddb" stroke="#5e35b1"/><text x="1002" y="244" font-size="11" fill="#455a64">GMD (deep stage)</text>
+  <rect x="980" y="252" width="16" height="13" fill="#90caf9" stroke="#1565c0"/><text x="1002" y="263" font-size="11" fill="#455a64">Decoder</text>
+  <text x="980" y="285" font-size="10.5" fill="#757575">GMD only at ≤16³ (≤4096 tokens)</text>
+
+  <line x1="20" y1="320" x2="1260" y2="320" stroke="#e0e0e0"/>
+
+  <!-- ===================== PANEL (b) GMD BLOCK ===================== -->
+  <text x="20" y="356" font-size="20" font-weight="bold" fill="#212121">(b) GMD Block</text>
+
+  <!-- input feature cube -->
+  <g>
+    <rect x="40" y="430" width="52" height="52" fill="#e1bee7" stroke="#6a1b9a"/>
+    <path d="M40,430 l12,-12 52,0 0,52 -12,12" fill="#ce93d8" stroke="#6a1b9a"/>
+    <text x="72" y="500" font-size="11" fill="#455a64" text-anchor="middle">X</text>
+    <text x="72" y="513" font-size="10" fill="#607d8b" text-anchor="middle">[C,D,H,W]</text>
+  </g>
+
+  <!-- channel split -->
+  <text x="190" y="372" font-size="12" fill="#263238" text-anchor="middle">channel split → G=6 groups (C/G each)</text>
+  <g stroke="#ffffff" stroke-width="1.4">
+    <rect x="150" y="392" width="48" height="24" fill="#1565c0"/>
+    <rect x="150" y="416" width="48" height="24" fill="#2e7d32"/>
+    <rect x="150" y="440" width="48" height="24" fill="#ef6c00"/>
+    <rect x="150" y="464" width="48" height="24" fill="#6a1b9a"/>
+    <rect x="150" y="488" width="48" height="24" fill="#c62828"/>
+    <rect x="150" y="512" width="48" height="24" fill="#00838f"/>
+  </g>
+  <rect x="150" y="392" width="48" height="144" fill="none" stroke="#263238" stroke-width="1.4"/>
+  <line x1="98" y1="456" x2="148" y2="456" stroke="#37474f" stroke-width="1.8" fill="none" marker-end="url(#a)"/>
+
+  <!-- per-group mamba, each a different direction -->
+  <g font-size="11">
+    <g fill="#f5f5f5" stroke-width="2">
+      <rect x="250" y="392" width="156" height="24" rx="3" stroke="#1565c0"/>
+      <rect x="250" y="416" width="156" height="24" rx="3" stroke="#2e7d32"/>
+      <rect x="250" y="440" width="156" height="24" rx="3" stroke="#ef6c00"/>
+      <rect x="250" y="464" width="156" height="24" rx="3" stroke="#6a1b9a"/>
+      <rect x="250" y="488" width="156" height="24" rx="3" stroke="#c62828"/>
+      <rect x="250" y="512" width="156" height="24" rx="3" stroke="#00838f"/>
+    </g>
+    <text x="328" y="408" fill="#263238" text-anchor="middle">Mamba(C/G)  (D,H,W)→</text>
+    <text x="328" y="432" fill="#263238" text-anchor="middle">Mamba(C/G)  (H,D,W)→</text>
+    <text x="328" y="456" fill="#263238" text-anchor="middle">Mamba(C/G)  (W,D,H)→</text>
+    <text x="328" y="480" fill="#263238" text-anchor="middle">Mamba(C/G)  (D,H,W)←</text>
+    <text x="328" y="504" fill="#263238" text-anchor="middle">Mamba(C/G)  (H,D,W)←</text>
+    <text x="328" y="528" fill="#263238" text-anchor="middle">Mamba(C/G)  (W,D,H)←</text>
+  </g>
+  <g stroke-width="1.6" fill="none">
+    <line x1="198" y1="404" x2="248" y2="404" stroke="#1565c0" marker-end="url(#a)"/>
+    <line x1="198" y1="428" x2="248" y2="428" stroke="#2e7d32" marker-end="url(#a)"/>
+    <line x1="198" y1="452" x2="248" y2="452" stroke="#ef6c00" marker-end="url(#a)"/>
+    <line x1="198" y1="476" x2="248" y2="476" stroke="#6a1b9a" marker-end="url(#a)"/>
+    <line x1="198" y1="500" x2="248" y2="500" stroke="#c62828" marker-end="url(#a)"/>
+    <line x1="198" y1="524" x2="248" y2="524" stroke="#00838f" marker-end="url(#a)"/>
+  </g>
+  <text x="328" y="552" font-size="10.5" fill="#757575" text-anchor="middle">each group → one direction, one pass</text>
+
+  <!-- concat -->
+  <rect x="446" y="392" width="38" height="144" rx="4" fill="#eceff1" stroke="#455a64" stroke-width="1.6"/>
+  <text x="465" y="464" font-size="12" fill="#263238" text-anchor="middle" transform="rotate(-90 465 464)">Concat C</text>
+  <g stroke="#37474f" stroke-width="1.6" fill="none">
+    <line x1="406" y1="404" x2="444" y2="430" marker-end="url(#a)"/>
+    <line x1="406" y1="428" x2="444" y2="445" marker-end="url(#a)"/>
+    <line x1="406" y1="452" x2="444" y2="458" marker-end="url(#a)"/>
+    <line x1="406" y1="476" x2="444" y2="470" marker-end="url(#a)"/>
+    <line x1="406" y1="500" x2="444" y2="484" marker-end="url(#a)"/>
+    <line x1="406" y1="524" x2="444" y2="498" marker-end="url(#a)"/>
+  </g>
+
+  <!-- residual add + output -->
+  <circle cx="548" cy="464" r="17" fill="#fff" stroke="#455a64" stroke-width="1.8"/>
+  <text x="548" y="470" font-size="18" fill="#455a64" text-anchor="middle">+</text>
+  <line x1="484" y1="464" x2="529" y2="464" stroke="#37474f" stroke-width="1.8" fill="none" marker-end="url(#a)"/>
+  <path d="M72,430 L72,358 L548,358 L548,447" stroke="#9e9e9e" stroke-width="2" stroke-dasharray="5 4" fill="none" marker-end="url(#a)"/>
+  <text x="360" y="352" font-size="10.5" fill="#757575">residual skip (X + GMD(X))</text>
+  <line x1="565" y1="464" x2="612" y2="464" stroke="#37474f" stroke-width="1.8" fill="none" marker-end="url(#a)"/>
+  <text x="620" y="460" font-size="11.5" fill="#263238">output</text>
+  <text x="620" y="474" font-size="10" fill="#607d8b">[C,D,H,W]</text>
+
+  <text x="40" y="588" font-size="11.5" fill="#1565c0" font-weight="bold">Cost:  full-width K-dir. O(K·C²)   →   GMD  G·(C/G)² = O(C²/G)</text>
+  <text x="40" y="606" font-size="10.5" fill="#757575">no structure tensor · no eigen-decomposition · no learned routing</text>
+
+  <!-- divider between b and c -->
+  <line x1="645" y1="340" x2="645" y2="930" stroke="#e0e0e0"/>
+
+  <!-- ===================== PANEL (c) ONE-GROUP SCAN ===================== -->
+  <text x="672" y="356" font-size="20" font-weight="bold" fill="#212121">(c) Voxels → sequence (one group, one direction)</text>
+
+  <!-- group cube (one slice grid shown) -->
+  <text x="760" y="392" font-size="12" fill="#263238">group g: C/G channels, order (D,H,W)</text>
+  <g stroke="#90a4ae" stroke-width="1">
+    <rect x="690" y="404" width="140" height="140" fill="#eef3f6"/>
+    <!-- 4x4 grid -->
+    <line x1="690" y1="439" x2="830" y2="439"/><line x1="690" y1="474" x2="830" y2="474"/><line x1="690" y1="509" x2="830" y2="509"/>
+    <line x1="725" y1="404" x2="725" y2="544"/><line x1="760" y1="404" x2="760" y2="544"/><line x1="795" y1="404" x2="795" y2="544"/>
+  </g>
+  <text x="760" y="562" font-size="10.5" fill="#607d8b" text-anchor="middle">H×W slice  (× D slices)</text>
+  <!-- raster scan path through the grid -->
+  <polyline points="707,421 812,421 812,456 707,456 707,491 812,491 812,526 707,526"
+            fill="none" stroke="#5e35b1" stroke-width="2.4" marker-end="url(#ag)"/>
+  <circle cx="707" cy="421" r="4" fill="#5e35b1"/>
+  <text x="700" y="416" font-size="10" fill="#5e35b1">start</text>
+
+  <!-- flatten arrow -->
+  <line x1="836" y1="474" x2="892" y2="474" stroke="#37474f" stroke-width="2" fill="none" marker-end="url(#a)"/>
+  <text x="864" y="466" font-size="10.5" fill="#607d8b" text-anchor="middle">flatten</text>
+
+  <!-- token sequence -->
+  <g stroke="#5e35b1" stroke-width="1.3" fill="#ede7f6">
+    <rect x="900" y="456" width="22" height="36"/><rect x="922" y="456" width="22" height="36"/>
+    <rect x="944" y="456" width="22" height="36"/><rect x="966" y="456" width="22" height="36"/>
+    <rect x="988" y="456" width="22" height="36"/><rect x="1010" y="456" width="22" height="36"/>
+    <rect x="1032" y="456" width="22" height="36"/><rect x="1054" y="456" width="22" height="36"/>
+  </g>
+  <text x="1070" y="478" font-size="14" fill="#5e35b1">…</text>
+  <text x="978" y="446" font-size="11" fill="#263238" text-anchor="middle">token sequence  (L = D·H·W,  C/G features each)</text>
+  <text x="978" y="508" font-size="10" fill="#607d8b" text-anchor="middle">x₁  x₂  x₃  …  x_L</text>
+
+  <!-- Mamba SSM over the sequence -->
+  <rect x="900" y="560" width="300" height="70" rx="6" fill="#f3e5f5" stroke="#5e35b1" stroke-width="1.8"/>
+  <text x="1050" y="582" font-size="12.5" fill="#311b92" text-anchor="middle" font-weight="bold">Mamba SSM  (selective scan, forward)</text>
+  <text x="1050" y="606" font-size="12.5" fill="#263238" text-anchor="middle">hₜ = Āₜ hₜ₋₁ + B̄ₜ xₜ ,   yₜ = Cₜ hₜ</text>
+  <text x="1050" y="623" font-size="10" fill="#607d8b" text-anchor="middle">state propagated left→right along the chosen order</text>
+  <line x1="978" y1="492" x2="978" y2="558" stroke="#37474f" stroke-width="2" fill="none" marker-end="url(#a)"/>
+
+  <!-- output sequence -> restore -->
+  <line x1="1050" y1="630" x2="1050" y2="664" stroke="#37474f" stroke-width="2" fill="none" marker-end="url(#a)"/>
+  <g stroke="#5e35b1" stroke-width="1.3" fill="#d1c4e9">
+    <rect x="952" y="666" width="20" height="30"/><rect x="972" y="666" width="20" height="30"/>
+    <rect x="992" y="666" width="20" height="30"/><rect x="1012" y="666" width="20" height="30"/>
+    <rect x="1032" y="666" width="20" height="30"/><rect x="1052" y="666" width="20" height="30"/>
+    <rect x="1072" y="666" width="20" height="30"/><rect x="1092" y="666" width="20" height="30"/>
+  </g>
+  <text x="1050" y="714" font-size="11" fill="#263238" text-anchor="middle">output tokens  y₁ … y_L</text>
+  <line x1="950" y1="681" x2="900" y2="681" stroke="#37474f" stroke-width="2" fill="none" marker-end="url(#a)"/>
+  <text x="864" y="677" font-size="10.5" fill="#607d8b" text-anchor="middle">restore</text>
+  <text x="864" y="690" font-size="10.5" fill="#607d8b" text-anchor="middle">order</text>
+  <!-- restored cube -->
+  <g stroke="#90a4ae" stroke-width="1">
+    <rect x="712" y="636" width="92" height="92" fill="#ede7f6"/>
+    <line x1="712" y1="667" x2="804" y2="667"/><line x1="712" y1="697" x2="804" y2="697"/>
+    <line x1="743" y1="636" x2="743" y2="728"/><line x1="773" y1="636" x2="773" y2="728"/>
+  </g>
+  <text x="758" y="746" font-size="10.5" fill="#607d8b" text-anchor="middle">context-mixed group feature</text>
+
+  <text x="672" y="788" font-size="10.5" fill="#757575">Other groups use different orders (panel b); reversed orders scan right→left.</text>
+</svg>

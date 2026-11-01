@@ -1,0 +1,9 @@
+torch>=2.1
+numpy
+monai>=1.3
+nibabel
+matplotlib
+medpy
+scipy
+# Mamba kernels (install separately, CUDA GPU required):
+#   pip install causal-conv1d mamba-ssm
