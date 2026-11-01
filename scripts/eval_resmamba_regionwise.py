@@ -22,7 +22,7 @@ split_dir = f"{WORK}/splits"
 ckpt = os.environ.get("CKPT", f"{WORK}/logs/resmamba_gmd_split/model/best_model_0.8477.pt")
 
 # architecture must match the checkpoint being loaded (ablation variants differ)
-SCAN = os.environ.get("SCAN", "grouped")                 # grouped | stas | bidir
+SCAN = os.environ.get("SCAN", "grouped")                 # grouped | grouped_gated | bidir
 _ms = os.environ.get("MAMBA_STAGES", "2,3").strip()      # "2,3" deep; "1,2,3"; "" none
 MAMBA_STAGES = tuple(int(x) for x in _ms.split(",") if x.strip() != "") if _ms else ()
 print(f"[eval] SCAN={SCAN}  MAMBA_STAGES={MAMBA_STAGES}")

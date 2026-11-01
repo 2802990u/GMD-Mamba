@@ -28,16 +28,16 @@ from light_training.utils.files_helper import save_new_model_and_delete_last
 # FOUR changes, all of them about *which data* and *which hardware*, none of
 # them about the method:
 #
-#  1. DATA SPLIT. Theirs reads data/test_list.py. We read our own exported
-#     876/125/250 lists so their model trains on exactly the cases AGILE-Mamba
-#     trained on, and is tested on exactly the cases AGILE-Mamba was tested on.
+#  1. DATA SPLIT. Theirs reads data/test_list.py. We read the same exported
+#     876/125/250 lists so every model trains and is tested on exactly the same
+#     cases.
 #
 #  2. VALIDATION SET -- the one deliberate protocol deviation.
 #     Theirs ends with:
 #         trainer.train(train_dataset=train_ds, val_dataset=test_ds)
 #     i.e. the best checkpoint is chosen by peeking at the test set. If we
 #     copied that here, their model would get to select on OUR 250 test cases,
-#     which AGILE-Mamba never touched during development, and the comparison
+#     which were never touched during development, and the comparison
 #     would be rigged in their favour. So we validate on our held-out 125 and
 #     leave the 250 completely untouched until the single final evaluation.
 #     Note this is a *conservative* choice: it can only make their reproduced
@@ -68,7 +68,7 @@ data_dir = f"{WORK}/data/fullres/train"
 split_dir = f"{WORK}/splits"
 
 # ---- ablation knobs (set via env) ----
-SCAN = os.environ.get("SCAN", "grouped")                 # grouped | stas | bidir
+SCAN = os.environ.get("SCAN", "grouped")                 # grouped | grouped_gated | bidir
 _ms = os.environ.get("MAMBA_STAGES", "2,3").strip()      # "2,3" deep-only; "0,1,2,3" everywhere; "" none
 MAMBA_STAGES = tuple(int(x) for x in _ms.split(",") if x.strip() != "") if _ms else ()
 VARIANT = os.environ.get("VARIANT", f"{SCAN}_ms{_ms.replace(',', '') or 'none'}")

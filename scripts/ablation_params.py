@@ -1,15 +1,14 @@
 """Print parameter counts for every ablation variant (the 'per-parameter' axis).
-Run in Envi, from the BraTS dir (needs resmamba_model.py + agile_mamba_model.py)."""
+Needs resmamba_model.py."""
 import torch
 from resmamba_model import ResMamba3D
 
 configs = [
-    ("noMamba",      "grouped", ()),        # pure SegResNet (scan irrelevant)
+    ("noMamba",      "grouped",       ()),        # pure SegResNet (scan irrelevant)
     ("gmd_deep",     "grouped",       (2, 3)),    # ours (ungated)
     ("gmd_gated",    "grouped_gated", (2, 3)),    # ours + selective fusion gate
-    ("stas_deep",    "stas",    (2, 3)),
-    ("bidir_deep",   "bidir",   (2, 3)),
-    ("gmd_shallow1", "grouped", (1, 2, 3)), # more Mamba (adds 64^3 stage)
+    ("bidir_deep",   "bidir",         (2, 3)),
+    ("gmd_shallow1", "grouped",       (1, 2, 3)), # more Mamba (adds 64^3 stage)
 ]
 print(f"{'variant':14s} {'scan':8s} {'stages':10s} {'params(M)':>10s}")
 for name, scan, ms in configs:

@@ -1,25 +1,28 @@
 """
-ResMamba3D — lightweight SegResNet-style residual U-Net with a sequence mixer
-at the deep (short-sequence) stages ONLY. This is the efficiency idea: keep the
-expensive high-resolution stages pure-conv; spend the sequence model only where
-the token count is small (stage 3-4, i.e. 16^3 / 8^3 for a 128^3 input).
+GMD-Mamba — a lightweight SegResNet-style residual U-Net with a Grouped
+Multi-Directional (GMD) state-space mixer applied at the deep (short-sequence)
+stages ONLY. This is the efficiency idea: keep the expensive high-resolution
+stages pure-convolutional, and spend the sequence model only where the token
+count is small (stages 3-4, i.e. 16^3 / 8^3 for a 128^3 input).
+
+The model class is `ResMamba3D`; the GMD scan is implemented in `GMDMamba3D`.
 
 Scan modes (`scan=`):
-  'stas'    : the Structure-Tensor Adaptive Scan from AGILE-Mamba (ATTRIBUTED /
-              cited to that work), wrapped residually (x + STAS(x)). This file's
-              contribution is the *integration* — STAS placed deep-only on a
-              SegResNet backbone for accuracy-per-parameter — NOT STAS itself.
-  'bidir'   : simple forward+reversed Mamba (cheapest).
-  'grouped' : channel-grouped multi-directional scan (reserved for a later
-              ablation; falls back to 'bidir' here).
+  'grouped'       : Grouped Multi-Directional (GMD) scan — OURS. Splits the C
+                    channels into G groups and scans each group along a different
+                    axis order (the three axes and their reverses) in a single
+                    pass, using a compact Mamba of width ~C/G per group. Gives
+                    multi-directional 3D context at O(C^2/G) cost instead of the
+                    O(K*C^2) of K full-width directional scans.
+  'grouped_gated' : GMD with a lightweight channel-gated fusion of the scan
+                    output (ablation variant).
+  'bidir'         : simple forward+reversed full-width Mamba (baseline).
 
-Distinct from AGILE-Mamba: plain GroupNorm pre-activation ResBlocks + additive
-skips (SegResNet family), and STAS enters as a *residual add-on*, not inside an
-HLG (STAS ∥ LDB concat-fuse) block.
-
-Backbone refs: SegResNet (Myronenko 2018); related: SegMamba (MICCAI'24),
-SegResMamba (arXiv:2503.07766). Mamba needs CUDA. Output: sigmoid multi-label.
-Input dims must be divisible by 8 (3 downs) — 128^3, 96^3, or LA 112x112x80.
+The GMD mixer enters as a residual add-on (x + GMD(x)) and is restricted to the
+two deepest encoder stages, so Mamba never processes more than 16^3 = 4096
+tokens. Backbone: SegResNet-style GroupNorm pre-activation ResBlocks with
+additive skips (Myronenko 2018). Mamba requires a CUDA GPU. Input dims must be
+divisible by 8 (three downsamplings) — e.g. 128^3 or 96^3.
 """
 import torch
 import torch.nn as nn
@@ -31,11 +34,6 @@ try:
 except ImportError:
     HAS_MAMBA = False
 
-try:
-    from agile_mamba_model import STASBlock          # adopted + cited from AGILE-Mamba
-    HAS_STAS = True
-except Exception:
-    HAS_STAS = False
 
 
 def gn(c, groups=8):
@@ -58,18 +56,6 @@ class ResBlock(nn.Module):
         z = self.c1(F.relu(self.n1(x)))
         z = self.c2(F.relu(self.n2(z)))
         return x + z
-
-
-class STASResidual(nn.Module):
-    """Residual wrapper around AGILE-Mamba's STASBlock: x + STAS(x)."""
-    def __init__(self, c, bidirectional=True):
-        super().__init__()
-        if not HAS_STAS:
-            raise ImportError("STASBlock not importable from agile_mamba_model.")
-        self.stas = STASBlock(c, bidirectional=bidirectional)
-
-    def forward(self, x):
-        return x + self.stas(x)
 
 
 class BiMamba3D(nn.Module):
@@ -96,10 +82,10 @@ class GMDMamba3D(nn.Module):
     DIFFERENT fixed axis order (D-/H-/W-major, each optionally reversed), using a
     small per-group Mamba of width ~C/G; then concat and add residually.
 
-    Cost vs SegMamba's K full-width scans: K scans each cost ~ C^2 (projections);
-    here G groups cost ~ G*(C/G)^2 = C^2/G  -> multi-directional coverage for a
-    FRACTION of one full-width scan. No structure tensor, no DFG gate — distinct
-    from STAS, and much lighter than scanning the full width K times.
+    Cost vs K full-width scans: K scans each cost ~ C^2 (projections); here G
+    groups cost ~ G*(C/G)^2 = C^2/G  -> multi-directional coverage for a FRACTION
+    of one full-width scan. No structure tensor, no learned direction selection,
+    and much lighter than scanning the full width K times.
     """
     DIRS = [((0, 1, 2), False), ((1, 0, 2), False), ((2, 0, 1), False),
             ((0, 1, 2), True),  ((1, 0, 2), True),  ((2, 0, 1), True)]
@@ -159,8 +145,6 @@ class GMDMamba3D(nn.Module):
 
 
 def make_mixer(c, scan, bidirectional=True):
-    if scan == "stas":
-        return STASResidual(c, bidirectional=bidirectional)
     if scan == "grouped":
         return GMDMamba3D(c)
     if scan == "grouped_gated":
@@ -183,7 +167,7 @@ class Up(nn.Module):
 class ResMamba3D(nn.Module):
     def __init__(self, in_channels=1, num_classes=1, init_filters=32,
                  blocks_down=(1, 2, 2, 4), blocks_up=(1, 1, 1),
-                 mamba_stages=(2, 3), scan="stas", bidirectional=True,
+                 mamba_stages=(2, 3), scan="grouped", bidirectional=True,
                  deep_supervision=False):
         super().__init__()
         nstage = len(blocks_down)
@@ -236,10 +220,10 @@ class ResMamba3D(nn.Module):
 
 if __name__ == "__main__":
     dev = "cuda" if torch.cuda.is_available() else "cpu"
-    for scan in ["grouped", "grouped_gated", "stas", "bidir"]:
+    for scan in ["grouped", "grouped_gated", "bidir"]:
         m = ResMamba3D(in_channels=1, num_classes=1, init_filters=32, scan=scan).to(dev)
         n = sum(p.numel() for p in m.parameters()) / 1e6
-        print(f"scan={scan:6s} HAS_STAS={HAS_STAS} HAS_MAMBA={HAS_MAMBA} params(M)={n:.2f}")
+        print(f"scan={scan:13s} HAS_MAMBA={HAS_MAMBA} params(M)={n:.2f}")
         if dev == "cuda":
             x = torch.randn(2, 1, 128, 128, 128, device=dev)
             m.train(); y = m(x); y.float().sum().backward()
