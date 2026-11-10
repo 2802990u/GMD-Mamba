@@ -1,3 +1,5 @@
+### [Preprint on ArXiv](https://arxiv.org/html/2611.10032v1)
+
 # GMD-Mamba: Lightweight 3D Medical Image Segmentation Using a Grouped Multi-Directional Mamba
 
 Official implementation of **GMD-Mamba**, a lightweight (~19.2M parameter) 3D
